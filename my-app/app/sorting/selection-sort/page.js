@@ -1,16 +1,22 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [arrayLength, setArrayLength] = useState(10);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
-  const [red, setRed] = useState(-1); //red
-  const [green, setGreen] = useState(-1); //green
+  const [red, setRed] = useState(-1); // current
+  const [green, setGreen] = useState(-1); //comparing
+  const [yellow, setYellow] = useState(-1); //minIndex
+
+  useEffect(() => {
+    generateArray();
+  }, [arrayLength]);
 
   function generateArray() {
     return Array.from(
-      { length: 10 },
+      { length: arrayLength },
       () => Math.floor(Math.random() * 100) + 10,
     );
   }
@@ -26,32 +32,35 @@ export default function Home() {
 
     for (let i = 0; i < arr.length; i++) {
       let minIndex = i;
+      setRed(i)
+      setYellow(i);
 
       for (let j = i + 1; j < arr.length; j++) {
         setGreen(j);
         if (arr[j] < arr[minIndex]) {
           minIndex = j;
+          setYellow(j)
         }
 
-        await sleep(400);
+        await sleep(500);
       }
 
       if (minIndex !== i) {
         [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         setArray([...arr]);
-        await sleep(800);
+        await sleep(700);
       }
     }
 
     setSorting(false);
+    setGreen(-1);
   };
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-
-    {/* Go back Link */}
+      {/* Go back Link */}
       <div className="absolute top-4 left-4">
         <Link
           href="/sorting"
@@ -63,20 +72,32 @@ export default function Home() {
 
       <h1 className="text-3xl font-bold mb-6">Selection Sort Visualizer</h1>
 
-      {/* Bars */}
       <div className="flex items-end gap-1 h-80 mb-6">
-        {array.map((value, index) => (
-          <div
-            key={index}
-            className={`${index === green ? "bg-green-500" : "bg-blue-500"} w-15 mx-2 flex justify-center p-2`}
-            style={{ height: `${value * 3}px` }}
-          >
-            {value}
-          </div>
-        ))}
+        {array.map((value, index) => {
+
+            let color = "bg-blue-500"
+
+            if(index === red){
+                color = "bg-red-500"
+            }
+            else if(index === green){
+                color = "bg-green-500"
+            }
+            else if(index === yellow){
+                color = "bg-yellow-500"
+            }
+          return (
+            <div
+              key={index}
+              className={`${color} w-15 mx-2 flex justify-center p-2`}
+              style={{ height: `${value * 3}px` }}
+            >
+              {value}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Controls */}
       <div className="flex gap-4">
         <button
           onClick={generateNewArray}
@@ -87,10 +108,21 @@ export default function Home() {
 
         <button
           onClick={selectionSort}
-          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer"
+          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer "
         >
-          Start Sorting
+          {sorting ? "Running..." : "Start Sorting"}
         </button>
+      </div>
+
+      {sorting && <h2 className="mt-3">Performing selection sort...</h2>}
+
+      <div>
+        <input
+          type="number"
+          value={arrayLength}
+          onChange={(e) => setArrayLength(Number(e.target.value))}
+          className="bg-gray-500 "
+        />
       </div>
     </div>
   );
