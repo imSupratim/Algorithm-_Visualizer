@@ -3,8 +3,9 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <>
-      <div className="relative min-h-screen overflow-hidden">
+
+    <div className="relative h-screen overflow-hidden">
+      <Navbar/>
       {/* Background Video */}
       <video
         autoPlay
@@ -18,13 +19,11 @@ export default function Home() {
       </video>
 
       {/* Page Content */}
-        <Navbar/>
       <div className="flex flex-col items-center justify-center min-h-screen text-white">
         <h1 className="text-4xl font-bold">Home page</h1>
         <p className="mt-4 text-lg">meow meow</p>
       </div>
     </div>
 
-    </>
   );
 }

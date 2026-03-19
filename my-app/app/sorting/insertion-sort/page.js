@@ -10,15 +10,17 @@ export default function Home() {
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [customInput, setCustomInput] = useState("");
   const speedRef = useRef(speed);
 
   useEffect(() => {
     generateNewArray();
   }, [arrayLength]);
 
-  useEffect(()=>{
+  useEffect(() => {
     speedRef.current = speed;
-  },[speed]);
+  }, [speed]);
 
   function generateArray() {
     return Array.from(
@@ -33,6 +35,12 @@ export default function Home() {
 
     const s = speedRef.current;
     return maxDelay - (s / 24) * (maxDelay - minDelay);
+  };
+
+  const resetColors = () => {
+    setCurrent(-1);
+    setSorted(-1);
+    setComparing(-1);
   };
 
   const generateNewArray = () => {
@@ -73,6 +81,44 @@ export default function Home() {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const handleCustomInput = () => {
+    if (sorting) return;
+
+    try {
+      const values = customInput
+        .split(",")
+        .map((num) => num.trim())
+        .filter((num) => num !== "")
+        .map((num) => Number(num));
+
+      if (values.length === 0) {
+        alert("Please enter a valid numbers");
+        return;
+      }
+      if (values.some(isNaN)) {
+        alert("Invalid input! only numbers are allowed");
+        return;
+      }
+      if (values.length > 15) {
+        alert("upto 15 length is allowed");
+        return;
+      }
+      if (values.some((v) => v < 1 || v > 100)) {
+        alert("keep values between 1 to 100");
+        return;
+      }
+
+      setArray(values);
+      // setArrayLength(values.length);
+      resetColors();
+      setPopupOpen(false);
+      setCustomInput("");
+    } catch (err) {
+      alert("Something went wrong");
+      console.log(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
       {/* Go back Link */}
@@ -112,7 +158,7 @@ export default function Home() {
           return (
             <div
               key={index}
-              className={`${color} w-15 mx-2 flex justify-center p-2 text-2xl text-black font-bold `}
+              className={`${color} w-15 mx-2 flex justify-center p-2  ${value>7 ?"text-black font-bold text-lg":"font-bold text-gray-400"}`}
               style={{ height: `${value * 3}px` }}
             >
               {value}
@@ -142,32 +188,78 @@ export default function Home() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
-          <span>Adjust Length</span>
-          <input
-            type="range"
-            value={arrayLength}
-            disabled={sorting}
-            onChange={(e) => setArrayLength(Number(e.target.value))}
-            min="5"
-            max="15"
-            className="bg-gray-500"
-          />
-          <span>{arrayLength}</span>
+      <div className="flex gap-7">
+        {/* speed and length */}
+        <div className="flex flex-col gap-3">
+          {/* length */}
+          <div className="flex gap-4">
+            <span>Adjust Length</span>
+            <input
+              type="range"
+              value={arrayLength}
+              disabled={sorting}
+              onChange={(e) => setArrayLength(Number(e.target.value))}
+              min="5"
+              max="15"
+              className="bg-gray-500"
+            />
+            <span>{arrayLength}</span>
+          </div>
+          {/* speed */}
+          <div className="flex gap-4 mb-5">
+            <span>Adjust Speed</span>
+            <input
+              type="range"
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+              min="1"
+              max="20"
+              className="bg-gray-500"
+            />
+            <span>{speed}</span>
+          </div>
         </div>
+        {/* custom array logic */}
+        <div>
+          <button
+            onClick={() => setPopupOpen(true)}
+            className="bg-gray-300 hover:bg-gray-500 rounded-2xl py-1 px-3 text-black "
+          >
+            Custom Array
+          </button>
 
-        <div className="flex gap-4">
-          <span>Adjust Speed</span>
-          <input
-            type="range"
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-            min="1"
-            max="20"
-            className="bg-gray-500"
-          />
-          <span>{speed}</span>
+          {/* popup window for array input */}
+          {popupOpen && (
+            <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
+                <h2 className="text-xl font-bold mb-4">Enter Custom Array</h2>
+
+                {/* Example input field */}
+                <input
+                  type="text"
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  placeholder="e.g. 10, 20, 30, 40"
+                  className="w-full border p-2 mb-4"
+                />
+
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => setPopupOpen(false)}
+                    className="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCustomInput}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
