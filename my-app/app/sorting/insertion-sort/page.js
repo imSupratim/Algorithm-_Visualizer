@@ -9,7 +9,7 @@ export default function Home() {
   const [comparing, setComparing] = useState(-1);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(10);
   const [popupOpen, setPopupOpen] = useState(false);
   const [customInput, setCustomInput] = useState("");
   const speedRef = useRef(speed);

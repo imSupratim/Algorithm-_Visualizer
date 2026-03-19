@@ -10,7 +10,7 @@ export default function Home() {
   const [red, setRed] = useState(-1); // current
   const [green, setGreen] = useState(-1); //comparing
   const [yellow, setYellow] = useState(-1); //minIndex
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(10);
   const [popupOpen, setPopupOpen] = useState(false);
   const [customInput, setCustomInput] = useState("");
   const speedRef = useRef(speed);
