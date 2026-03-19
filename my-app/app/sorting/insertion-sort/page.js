@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [arrayLength, setArrayLength] = useState(10);
+  const [current, setCurrent] = useState(-1);
+  const [sorted, setSorted] = useState(-1);
+  const [comparing, setComparing] = useState(-1);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
-  const [red, setRed] = useState(-1); // current
-  const [green, setGreen] = useState(-1); //comparing
-  const [yellow, setYellow] = useState(-1); //minIndex
 
   useEffect(() => {
     generateArray();
@@ -22,44 +22,39 @@ export default function Home() {
   }
 
   const generateNewArray = () => {
-    if (sorting) return;
+    if (sorting) {
+      alert("sorting is in progress...");
+      return;
+    }
+    setSorted(-1);
     setArray(generateArray());
   };
-
-  const resetColors=()=>{
-    setRed(-1);
-    setGreen(-1);
-    setYellow(-1);
-  }
 
   const selectionSort = async () => {
     setSorting(true);
     let arr = [...array];
+    const n = arr.length;
 
-    for (let i = 0; i < arr.length; i++) {
-      let minIndex = i;
-      setRed(i)
-      setYellow(i);
-
-      for (let j = i + 1; j < arr.length; j++) {
-        setGreen(j);
-        if (arr[j] < arr[minIndex]) {
-          minIndex = j;
-          setYellow(j)
-        }
-
-        await sleep(500);
-      }
-
-      if (minIndex !== i) {
-        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    for (let i = 0; i < n; i++) {
+      let j = i;
+      setCurrent(i);
+      setSorted(i - 1);
+      await sleep(700);
+      while (j > 0 && arr[j] < arr[j - 1]) {
+        setComparing(j - 1);
+        let temp = arr[j];
+        arr[j] = arr[j - 1];
+        arr[j - 1] = temp;
         setArray([...arr]);
-        await sleep(700);
+        j--;
+        await sleep(400);
       }
     }
 
     setSorting(false);
-    resetColors();
+    setCurrent(-1);
+    setComparing(-1);
+    setSorted(n - 1);
   };
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -76,26 +71,26 @@ export default function Home() {
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold mb-6">Selection Sort Visualizer</h1>
+      <div className="flex flex-col items-center">
+        <h1 className="text-3xl font-bold ">Insertion Sort Visualizer</h1>
+        {sorting && <h2 className="mt-3 mb-3 text-green-500">Performing insertion sort...</h2>}
+      </div>
 
       <div className="flex items-end gap-1 h-80 mb-6">
         {array.map((value, index) => {
+          let color = "bg-blue-500";
+          if (index === current) {
+            color = "bg-red-500";
+          } else if (index === comparing) {
+            color = "bg-yellow-500";
+          } else if (index <= sorted) {
+            color = "bg-green-500";
+          }
 
-            let color = "bg-blue-500"
-
-            if(index === red){
-                color = "bg-red-500"
-            }
-            else if(index === green){
-                color = "bg-green-500"
-            }
-            else if(index === yellow){
-                color = "bg-yellow-500"
-            }
           return (
             <div
               key={index}
-              className={`${color} w-15 mx-2 flex justify-center p-2`}
+              className={`${color} w-15 mx-2 flex justify-center p-2 text-2xl text-black font-bold `}
               style={{ height: `${value * 3}px` }}
             >
               {value}
@@ -104,23 +99,21 @@ export default function Home() {
         })}
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-10">
         <button
           onClick={generateNewArray}
-          className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 cursor-pointer"
+          className="px-4 py-2 bg-blue-300 rounded hover:bg-blue-400 cursor-pointer text-gray-800 font-bold"
         >
           Generate New Array
         </button>
 
         <button
           onClick={selectionSort}
-          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer "
+          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer text-gray-900 font-bold "
         >
           {sorting ? "Running..." : "Start Sorting"}
         </button>
       </div>
-
-      {sorting && <h2 className="mt-3">Performing selection sort...</h2>}
 
       <div>
         <input

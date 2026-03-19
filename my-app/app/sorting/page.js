@@ -9,6 +9,7 @@ const sortingPage = () => {
         <Sidebar />
         <div className='py-10 flex gap-10'>
             <Card name="Selection Sort" destination="/sorting/selection-sort" photo="/Sorting-1.jpg"/>
+            <Card name="Insertion Sort" destination="/sorting/insertion-sort" photo="/Sorting-2.jpg" />
         </div>
       </div>
     </div>
