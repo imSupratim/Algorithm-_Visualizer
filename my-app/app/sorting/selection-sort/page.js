@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [arrayLength, setArrayLength] = useState(10);
@@ -9,10 +9,16 @@ export default function Home() {
   const [red, setRed] = useState(-1); // current
   const [green, setGreen] = useState(-1); //comparing
   const [yellow, setYellow] = useState(-1); //minIndex
+    const [speed, setSpeed] = useState(1);
+    const speedRef = useRef(speed);
 
   useEffect(() => {
     generateNewArray();
   }, [arrayLength]);
+
+    useEffect(()=>{
+    speedRef.current = speed;
+  },[speed]);
 
   function generateArray() {
     return Array.from(
@@ -20,6 +26,14 @@ export default function Home() {
       () => Math.floor(Math.random() * 100) + 10,
     );
   }
+
+  const getDelay = () => {
+    const minDelay = 10;
+    const maxDelay = 1000;
+
+    const s = speedRef.current;
+    return maxDelay - (s / 24) * (maxDelay - minDelay);
+  };
 
   const generateNewArray = () => {
     if (sorting) {
@@ -51,13 +65,13 @@ export default function Home() {
           setYellow(j);
         }
 
-        await sleep(500);
+        await sleep(getDelay());
       }
 
       if (minIndex !== i) {
         [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         setArray([...arr]);
-        await sleep(700);
+        await sleep(getDelay());
       }
     }
 
@@ -80,7 +94,11 @@ export default function Home() {
       </div>
 
       <div className="flex items-center flex-col">
-        <h1 className="text-3xl font-bold"><span className="text-green-300">Selection</span> <span className="text-green-400">Sort</span> <span className="text-green-500">Visualizer</span></h1>
+        <h1 className="text-3xl font-bold">
+          <span className="text-green-300">Selection</span>{" "}
+          <span className="text-green-400">Sort</span>{" "}
+          <span className="text-green-500">Visualizer</span>
+        </h1>
         {sorting && (
           <h2 className="mt-3 mb-3 text-green-500">
             Performing selection sort...
@@ -145,6 +163,19 @@ export default function Home() {
             className="bg-gray-500"
           />
           <span>{arrayLength}</span>
+        </div>
+
+        <div className="flex gap-4">
+          <span>Adjust Speed</span>
+          <input
+            type="range"
+            value={speed}
+            onChange={(e) => setSpeed(Number(e.target.value))}
+            min="1"
+            max="20"
+            className="bg-gray-500"
+          />
+          <span>{speed}</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [arrayLength, setArrayLength] = useState(10);
@@ -9,10 +9,16 @@ export default function Home() {
   const [comparing, setComparing] = useState(-1);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const speedRef = useRef(speed);
 
   useEffect(() => {
     generateNewArray();
   }, [arrayLength]);
+
+  useEffect(()=>{
+    speedRef.current = speed;
+  },[speed]);
 
   function generateArray() {
     return Array.from(
@@ -20,6 +26,14 @@ export default function Home() {
       () => Math.floor(Math.random() * 100) + 10,
     );
   }
+
+  const getDelay = () => {
+    const minDelay = 10;
+    const maxDelay = 1000;
+
+    const s = speedRef.current;
+    return maxDelay - (s / 24) * (maxDelay - minDelay);
+  };
 
   const generateNewArray = () => {
     if (sorting) {
@@ -39,7 +53,7 @@ export default function Home() {
       let j = i;
       setCurrent(i);
       setSorted(i - 1);
-      await sleep(700);
+      await sleep(getDelay());
       while (j > 0 && arr[j] < arr[j - 1]) {
         setComparing(j - 1);
         let temp = arr[j];
@@ -47,7 +61,7 @@ export default function Home() {
         arr[j - 1] = temp;
         setArray([...arr]);
         j--;
-        await sleep(400);
+        await sleep(getDelay());
       }
     }
 
@@ -72,8 +86,16 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center">
-        <h1 className="text-3xl font-bold "><span className="text-orange-300">Insertion</span> <span className="text-orange-400">Sort</span> <span className="text-orange-500">Visualizer</span></h1>
-        {sorting && <h2 className="mt-3 mb-3 text-green-500">Performing insertion sort...</h2>}
+        <h1 className="text-3xl font-bold ">
+          <span className="text-orange-300">Insertion</span>{" "}
+          <span className="text-orange-400">Sort</span>{" "}
+          <span className="text-orange-500">Visualizer</span>
+        </h1>
+        {sorting && (
+          <h2 className="mt-3 mb-3 text-green-500">
+            Performing insertion sort...
+          </h2>
+        )}
       </div>
 
       <div className="flex items-end gap-1 h-80 mb-6">
@@ -120,19 +142,32 @@ export default function Home() {
         </button>
       </div>
 
-      <div>
+      <div className="flex flex-col gap-4">
         <div className="flex gap-4">
-            <span>Adjust Length</span>
-            <input
-          type="range"
-          value={arrayLength}
-          disabled={sorting}
-          onChange={(e) => setArrayLength(Number(e.target.value))}
-          min="5"
-          max="15"
-          className="bg-gray-500"
-        />
-        <span>{arrayLength}</span>
+          <span>Adjust Length</span>
+          <input
+            type="range"
+            value={arrayLength}
+            disabled={sorting}
+            onChange={(e) => setArrayLength(Number(e.target.value))}
+            min="5"
+            max="15"
+            className="bg-gray-500"
+          />
+          <span>{arrayLength}</span>
+        </div>
+
+        <div className="flex gap-4">
+          <span>Adjust Speed</span>
+          <input
+            type="range"
+            value={speed}
+            onChange={(e) => setSpeed(Number(e.target.value))}
+            min="1"
+            max="20"
+            className="bg-gray-500"
+          />
+          <span>{speed}</span>
         </div>
       </div>
     </div>
