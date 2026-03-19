@@ -11,7 +11,7 @@ export default function Home() {
   const [yellow, setYellow] = useState(-1); //minIndex
 
   useEffect(() => {
-    generateArray();
+    generateNewArray();
   }, [arrayLength]);
 
   function generateArray() {
@@ -22,15 +22,18 @@ export default function Home() {
   }
 
   const generateNewArray = () => {
-    if (sorting) return;
+    if (sorting) {
+      alert("sorting is in progress");
+      return;
+    }
     setArray(generateArray());
   };
 
-  const resetColors=()=>{
+  const resetColors = () => {
     setRed(-1);
     setGreen(-1);
     setYellow(-1);
-  }
+  };
 
   const selectionSort = async () => {
     setSorting(true);
@@ -38,14 +41,14 @@ export default function Home() {
 
     for (let i = 0; i < arr.length; i++) {
       let minIndex = i;
-      setRed(i)
+      setRed(i);
       setYellow(i);
 
       for (let j = i + 1; j < arr.length; j++) {
         setGreen(j);
         if (arr[j] < arr[minIndex]) {
           minIndex = j;
-          setYellow(j)
+          setYellow(j);
         }
 
         await sleep(500);
@@ -76,22 +79,26 @@ export default function Home() {
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold mb-6">Selection Sort Visualizer</h1>
+      <div className="flex items-center flex-col">
+        <h1 className="text-3xl font-bold"><span className="text-green-300">Selection</span> <span className="text-green-400">Sort</span> <span className="text-green-500">Visualizer</span></h1>
+        {sorting && (
+          <h2 className="mt-3 mb-3 text-green-500">
+            Performing selection sort...
+          </h2>
+        )}
+      </div>
 
       <div className="flex items-end gap-1 h-80 mb-6">
         {array.map((value, index) => {
+          let color = "bg-blue-500";
 
-            let color = "bg-blue-500"
-
-            if(index === red){
-                color = "bg-red-500"
-            }
-            else if(index === green){
-                color = "bg-green-500"
-            }
-            else if(index === yellow){
-                color = "bg-yellow-500"
-            }
+          if (index === red) {
+            color = "bg-red-500";
+          } else if (index === green) {
+            color = "bg-green-500";
+          } else if (index === yellow) {
+            color = "bg-yellow-500";
+          }
           return (
             <div
               key={index}
@@ -104,31 +111,41 @@ export default function Home() {
         })}
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-10">
         <button
           onClick={generateNewArray}
-          className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 cursor-pointer"
+          className="px-4 py-2 bg-blue-300 rounded hover:bg-blue-400 cursor-pointer text-gray-800 font-bold"
         >
           Generate New Array
         </button>
 
         <button
           onClick={selectionSort}
-          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer "
+          disabled={sorting}
+          className={`px-4 py-2 font-bold text-black ${
+            sorting
+              ? "bg-gray-500 cursor-not-allowed "
+              : "bg-purple-500 rounded hover:bg-purple-600 cursor-pointer"
+          } `}
         >
           {sorting ? "Running..." : "Start Sorting"}
         </button>
       </div>
 
-      {sorting && <h2 className="mt-3">Performing selection sort...</h2>}
-
       <div>
-        <input
-          type="number"
-          value={arrayLength}
-          onChange={(e) => setArrayLength(Number(e.target.value))}
-          className="bg-gray-500 "
-        />
+        <div className="flex gap-4">
+          <span>Adjust Length</span>
+          <input
+            type="range"
+            value={arrayLength}
+            disabled={sorting}
+            onChange={(e) => setArrayLength(Number(e.target.value))}
+            min="5"
+            max="15"
+            className="bg-gray-500"
+          />
+          <span>{arrayLength}</span>
+        </div>
       </div>
     </div>
   );

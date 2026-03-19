@@ -11,7 +11,7 @@ export default function Home() {
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    generateArray();
+    generateNewArray();
   }, [arrayLength]);
 
   function generateArray() {
@@ -72,7 +72,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center">
-        <h1 className="text-3xl font-bold ">Insertion Sort Visualizer</h1>
+        <h1 className="text-3xl font-bold "><span className="text-orange-300">Insertion</span> <span className="text-orange-400">Sort</span> <span className="text-orange-500">Visualizer</span></h1>
         {sorting && <h2 className="mt-3 mb-3 text-green-500">Performing insertion sort...</h2>}
       </div>
 
@@ -109,19 +109,31 @@ export default function Home() {
 
         <button
           onClick={selectionSort}
-          className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600 cursor-pointer text-gray-900 font-bold "
+          disabled={sorting}
+          className={`px-4 py-2 font-bold text-black ${
+            sorting
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-purple-500 rounded hover:bg-purple-600 cursor-pointer"
+          } `}
         >
           {sorting ? "Running..." : "Start Sorting"}
         </button>
       </div>
 
       <div>
-        <input
-          type="number"
+        <div className="flex gap-4">
+            <span>Adjust Length</span>
+            <input
+          type="range"
           value={arrayLength}
+          disabled={sorting}
           onChange={(e) => setArrayLength(Number(e.target.value))}
-          className="bg-gray-500 "
+          min="5"
+          max="15"
+          className="bg-gray-500"
         />
+        <span>{arrayLength}</span>
+        </div>
       </div>
     </div>
   );
