@@ -274,30 +274,6 @@ export default function Home() {
       <div className="h-19 bg-gradient-to-b from-gray-900 to-gray-800"></div>
       <footer className="bg-gray-800 text-gray-300 py-10 px-6 ">
         <div className="max-w-5xl mx-auto space-y-6">
-          <h2 className="text-2xl font-bold text-orange-400">
-            Selection Sort - Theory
-          </h2>
-
-          <p>
-            <strong>Selection Sort</strong> is a simple sorting algorithm that
-            works by repeatedly selecting the smallest element from the unsorted
-            portion of the array and placing it at the beginning. It divides the
-            array into two parts: the sorted part and the unsorted part.
-          </p>
-
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              🔄 How it Works:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Start from the first element</li>
-              <li>Find the smallest element in the remaining unsorted array</li>
-              <li>Swap it with the current element</li>
-              <li>Move the boundary of sorted array one step forward</li>
-              <li>Repeat until the entire array is sorted</li>
-            </ul>
-          </div>
-
           <div>
             <h3 className="text-xl font-semibold text-orange-300 mb-2">
               ⚡ Time Complexity:
@@ -325,26 +301,18 @@ export default function Home() {
             </p>
           </div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              ✅ Advantages:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Simple and easy to understand</li>
-              <li>Requires minimal memory (in-place)</li>
-              <li>Performs fewer swaps compared to other algorithms</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              ❌ Disadvantages:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Not efficient for large datasets</li>
-              <li>Time complexity is always O(n²)</li>
-              <li>Not a stable sorting algorithm</li>
-            </ul>
+          <div className=" flex justify-center items-center py-2">
+            <iframe
+              className="border-2 border-gray-300 rounded-2xl"
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/HGk_ypEuS24?si=4dTHQEeugkr8bkj4&amp;start=167"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
           </div>
 
           <p className="text-center text-gray-400 pt-4 border-t border-gray-600">

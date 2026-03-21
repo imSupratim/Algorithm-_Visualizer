@@ -1,3 +1,4 @@
+import { MonitorCog } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -17,8 +18,13 @@ const Card = ({ name, destination, photo }) => {
       </div>
 
       
-      <div className="h-1/2 flex items-center justify-center p-2 bg-gray-100 text-gray-800 font-semibold">
-        {name}
+      <div className="h-1/2 flex items-center justify-center p-2 bg-gradient-to-br from-gray-200 to-gray-400 text-gray-800 font-semibold ">
+        <div className="flex gap-3 justify-center items-center">
+          <span className="text-xl">{name}</span>
+           <span className="text-purple-900">
+            <MonitorCog/>
+          </span>
+        </div>
       </div>
     </Link>
   );

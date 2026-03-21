@@ -273,33 +273,6 @@ export default function Home() {
       <div className="h-19 bg-gradient-to-b from-gray-900 to-gray-800"></div>
       <footer className="bg-gray-800 text-gray-300 py-10 px-6 ">
         <div className="max-w-5xl mx-auto space-y-6">
-          <h2 className="text-2xl font-bold text-orange-400">
-            Insertion Sort - Theory
-          </h2>
-
-          <p>
-            <strong>Insertion Sort</strong> is a simple and intuitive sorting
-            algorithm that works the same way you sort playing cards in your
-            hand. It builds the final sorted array one element at a time by
-            picking an element and placing it at its correct position in the
-            already sorted part of the array.
-          </p>
-
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              🔄 How it Works:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                Start from the second element (first element is already sorted)
-              </li>
-              <li>Compare it with the previous elements</li>
-              <li>Shift larger elements to the right</li>
-              <li>Insert the current element at the correct position</li>
-              <li>Repeat until the array is sorted</li>
-            </ul>
-          </div>
-
           <div>
             <h3 className="text-xl font-semibold text-orange-300 mb-2">
               ⚡ Time Complexity:
@@ -328,26 +301,18 @@ export default function Home() {
             </p>
           </div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              ✅ Advantages:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Simple and easy to understand</li>
-              <li>Efficient for small datasets</li>
-              <li>Works well for nearly sorted arrays</li>
-              <li>Stable sorting algorithm</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold text-orange-300 mb-2">
-              ❌ Disadvantages:
-            </h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Not efficient for large datasets</li>
-              <li>Time complexity is high (O(n²))</li>
-            </ul>
+          <div className=" flex justify-center items-center py-2">
+            <iframe
+              className="border-2 border-gray-300 rounded-2xl"
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/HGk_ypEuS24?si=GLjH9VBm5U7JXvYv&amp;start=1899"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
           </div>
 
           <p className="text-center text-gray-400 pt-4 border-t border-gray-600">
