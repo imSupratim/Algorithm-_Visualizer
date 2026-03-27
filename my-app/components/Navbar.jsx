@@ -20,6 +20,9 @@ export default function Navbar() {
           <Link href="/sorting" className="hover:text-blue-400 transition">
             Sorting
           </Link>
+          <Link href="/searching" className="hover:text-blue-400 transition">
+            Searching
+          </Link>
           <Link href="/vjbf" className="hover:text-blue-400 transition">
             About
           </Link>

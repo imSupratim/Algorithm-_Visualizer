@@ -6,7 +6,7 @@ const Card = ({ name, destination, photo }) => {
   return (
     <Link
       href={destination}
-      className="bg-white rounded-lg shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-xl w-32 h-40 md:w-64 md:h-80 flex flex-col"
+      className="bg-white rounded-lg shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-xl w-32 h-40 md:w-84 md:h-80 flex flex-col"
     >
       
       <div className="h-1/2">

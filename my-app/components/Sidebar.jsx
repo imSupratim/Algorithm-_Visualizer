@@ -4,10 +4,10 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="h-screen w-64 bg-gray-800 text-white p-4">
+    <div className="h-screen w-64 bg-gray-800 text-white py-4">
       
       {/* Title */}
-      <h2 className="text-xl font-bold mb-6">
+      <h2 className="text-xl font-bold mb-6 text-center">
         DSA Visualizer
       </h2>
 
@@ -20,6 +20,10 @@ export default function Sidebar() {
 
         <Link href="/sorting" className="block p-2 rounded hover:bg-gray-700 cursor-pointer">
           Sorting
+        </Link>
+
+        <Link href="/searching" className="block p-2 rounded hover:bg-gray-700 cursor-pointer">
+          Searching
         </Link>
 
         

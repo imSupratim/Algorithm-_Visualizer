@@ -2,18 +2,18 @@
 import GoBackButton from "@/components/GoBackButton";
 import PageWrapper from "@/utils/PageWrapper";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [arrayLength, setArrayLength] = useState(10);
-  const [current, setCurrent] = useState(-1);
-  const [sorted, setSorted] = useState(-1);
-  const [comparing, setComparing] = useState(-1);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);
   const [speed, setSpeed] = useState(10);
   const [popupOpen, setPopupOpen] = useState(false);
   const [customInput, setCustomInput] = useState("");
+  const [comparing, setComparing] = useState([]);
+  const [swapping, setSwapping] = useState([]);
+  const [sorted, setSorted] = useState([]);
   const speedRef = useRef(speed);
 
   useEffect(() => {
@@ -39,46 +39,50 @@ export default function Home() {
     return maxDelay - (s / 24) * (maxDelay - minDelay);
   };
 
-  const resetColors = () => {
-    setCurrent(-1);
-    setSorted(-1);
-    setComparing(-1);
-  };
-
   const generateNewArray = () => {
     if (sorting) {
       alert("sorting is in progress...");
       return;
     }
-    setSorted(-1);
+    resetColors();
     setArray(generateArray());
   };
 
-  const insertionSort = async () => {
+  const bubbleSort = async () => {
     setSorting(true);
     let arr = [...array];
     const n = arr.length;
+    let sortedArr = [];
 
-    for (let i = 0; i < n; i++) {
-      let j = i;
-      setCurrent(i);
-      setSorted(i - 1);
-      await sleep(getDelay());
-      while (j > 0 && arr[j] < arr[j - 1]) {
-        setComparing(j - 1);
-        let temp = arr[j];
-        arr[j] = arr[j - 1];
-        arr[j - 1] = temp;
-        setArray([...arr]);
-        j--;
+    for (let i = n - 1; i >= 0; i--) {
+      for (let j = 0; j <= i - 1; j++) {
+        setComparing([j, j + 1]);
         await sleep(getDelay());
+
+        if (arr[j] > arr[j + 1]) {
+          setSwapping([j, j + 1]);
+
+          let temp = arr[j];
+          arr[j] = arr[j + 1];
+          arr[j + 1] = temp;
+
+          setArray([...arr]);
+          await sleep(getDelay());
+
+          setSwapping([]);
+        }
       }
+      sortedArr.push(i);
+      setSorted([...sortedArr]);
     }
 
     setSorting(false);
-    setCurrent(-1);
-    setComparing(-1);
-    setSorted(n - 1);
+  };
+
+  const resetColors = () => {
+    setComparing([]);
+    setSwapping([]);
+    setSorted([]);
   };
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -126,32 +130,32 @@ export default function Home() {
       <header className="py-5 bg-gray-700">
         <div className="flex flex-col items-center">
           <h1 className="text-3xl font-bold ">
-            <span className="text-orange-300">Insertion</span>{" "}
-            <span className="text-orange-400">Sort</span>{" "}
-            <span className="text-orange-500">Visualizer</span>
+            <span className="text-purple-300">Bubble</span>{" "}
+            <span className="text-purple-400">Sort</span>{" "}
+            <span className="text-purple-500">Visualizer</span>
           </h1>
         </div>
       </header>
 
       <main className=" min-h-screen -mb-10 bg-gray-900 text-white flex flex-col items-center justify-center">
-        
-        <GoBackButton destination="/sorting"/>
+        <GoBackButton destination="/sorting" />
 
         {sorting && (
           <h2 className="mt-3 mb-3 text-green-500">
-            Performing insertion sort...
+            Performing bubble sort...
           </h2>
         )}
 
         <div className="flex items-end gap-1  mb-6  bg-black/10  h-[50vh] px-10 pb-1 rounded-xl border-3 border-gray-500">
           {array.map((value, index) => {
             let color = "bg-blue-500";
-            if (index === current) {
-              color = "bg-red-500";
-            } else if (index === comparing) {
-              color = "bg-yellow-500";
-            } else if (index <= sorted) {
+
+            if (sorted.includes(index)) {
               color = "bg-green-500";
+            } else if (swapping.includes(index)) {
+              color = "bg-red-500";
+            } else if (comparing.includes(index)) {
+              color = "bg-yellow-500";
             }
 
             return (
@@ -175,7 +179,7 @@ export default function Home() {
           </button>
 
           <button
-            onClick={insertionSort}
+            onClick={bubbleSort}
             disabled={sorting}
             className={`px-4 py-2 font-bold text-black ${
               sorting
@@ -273,14 +277,16 @@ export default function Home() {
             </h3>
             <ul className="list-disc list-inside space-y-1">
               <li>
-                <strong>Best Case:</strong> O(n) → when array is already sorted
+                <strong>Best Case:</strong> O(n) → when the array is already
+                sorted (with optimization: no swaps in a pass)
               </li>
               <li>
-                <strong>Average Case:</strong> O(n²)
+                <strong>Average Case:</strong> O(n²) → typical case with random
+                order
               </li>
               <li>
-                <strong>Worst Case:</strong> O(n²) → when array is reverse
-                sorted
+                <strong>Worst Case:</strong> O(n²) → when the array is
+                completely reversed
               </li>
             </ul>
           </div>
@@ -290,8 +296,9 @@ export default function Home() {
               💾 Space Complexity:
             </h3>
             <p>
-              O(1) → It is an in-place sorting algorithm (no extra memory
-              needed)
+              O(1) → Bubble Sort is an in-place algorithm, meaning it does not
+              require any extra memory apart from a few variables used for
+              swapping.
             </p>
           </div>
 
@@ -300,7 +307,7 @@ export default function Home() {
               className="border-2 border-gray-300 rounded-2xl"
               width="560"
               height="315"
-              src="https://www.youtube-nocookie.com/embed/HGk_ypEuS24?si=GLjH9VBm5U7JXvYv&amp;start=1899"
+              src="https://www.youtube.com/embed/HGk_ypEuS24?si=M8zldP1RvLqAapxA&amp;start=1061"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
