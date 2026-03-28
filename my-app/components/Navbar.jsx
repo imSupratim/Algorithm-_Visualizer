@@ -23,6 +23,9 @@ export default function Navbar() {
           <Link href="/searching" className="hover:text-blue-400 transition">
             Searching
           </Link>
+          <Link href="/heaps" className="hover:text-blue-400 transition">
+            Heap
+          </Link>
           <Link href="/vjbf" className="hover:text-blue-400 transition">
             About
           </Link>

@@ -162,7 +162,7 @@ export default function Home() {
             return (
               <div
                 key={index}
-                className={`${color} w-15 mx-2 flex justify-center p-2  ${value > 7 ? "text-black font-bold text-lg" : "font-bold text-gray-400"} transition-all duration-200 ease-in-out`}
+                className={`${color} w-15 mx-2 flex justify-center p-2  ${value > 7 ? "text-black font-bold text-lg" : "font-bold text-gray-400"} transition-all duration-500 ease-in-out`}
                 style={{ height: `${value * 3}px` }}
               >
                 {value}
