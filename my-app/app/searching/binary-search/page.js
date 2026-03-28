@@ -2,7 +2,7 @@
 import GoBackButton from "@/components/GoBackButton";
 import PageWrapper from "@/utils/PageWrapper";
 import { Moon, Sun } from "lucide-react";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 const page = () => {
   const [dark, setDark] = useState(true);
@@ -16,6 +16,11 @@ const page = () => {
   const [customInput, setCustomInput] = useState("");
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [foundIndex, setFoundIndex] = useState(-1);
+  const [low, setLow] = useState(-1);
+  const [high, setHigh] = useState(-1);
+  const [mid, setMid] = useState(-1);
+  const [speed, setSpeed] = useState(10);
+  const speedRef = useRef(speed);
 
   const generateArray = () => {
     if (searching) return;
@@ -30,16 +35,31 @@ const page = () => {
   };
 
   useEffect(() => {
+    speedRef.current = speed;
+  }, [speed]);
+
+  useEffect(() => {
     generateArray();
   }, [arrayLength]);
 
   const resetState = () => {
     setCurrentIndex(-1);
     setFoundIndex(-1);
+    setLow(-1);
+    setHigh(-1);
+    setMid(-1);
     setMessage(null);
   };
 
-  const linearSearch = async () => {
+  const getDelay = () => {
+    const minDelay = 10;
+    const maxDelay = 1000;
+
+    const s = speedRef.current;
+    return maxDelay - (s / 24) * (maxDelay - minDelay);
+  };
+
+  const binarySearch = async () => {
     if (searching) return;
 
     const num = Number(target);
@@ -48,34 +68,53 @@ const page = () => {
       return;
     }
 
+    // SORT ARRAY FIRST
+    const sortedArr = [...array].sort((a, b) => a - b);
+    setArray(sortedArr);
+
     setSearching(true);
     resetState();
-    setMessage("Performing Linear Search...");
-    setMessageColor("text-yellow-500")
 
-    for (let i = 0; i < array.length; i++) {
-      setCurrentIndex(i);
-      await sleep(500);
+    let l = 0;
+    let h = sortedArr.length - 1;
 
-      if (array[i] === num) {
-        setFoundIndex(i);
+    setMessage("Performing Binary Search...");
+    setMessageColor("text-yellow-500");
+
+    while (l <= h) {
+      setLow(l);
+      setHigh(h);
+
+      let m = Math.floor((l + h) / 2);
+      setMid(m);
+
+      await sleep(getDelay());
+
+      if (sortedArr[m] === num) {
+        setFoundIndex(m);
         setSearching(false);
-        setMessage(num+" found at index no. "+i);
-        setMessageColor("text-green-500")
-        console.log(message);
+        setMessage(num + " found at index " + m);
+        setMessageColor("text-green-500");
         return;
+      } else if (sortedArr[m] < num) {
+        l = m + 1;
+      } else {
+        h = m - 1;
       }
-      setCurrentIndex(-1);
+
+      await sleep(getDelay());
     }
 
     setSearching(false);
-    setMessage(num+" not found...")
-    setMessageColor("text-red-500")
-    
+    setMessage(num + " not found...");
+    setMessageColor("text-red-500");
+    setMid(-1);
+    setLow(-1);
+    setHigh(-1);
   };
 
   const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-  
+
   const handleCustomInput = () => {
     if (searching) return;
 
@@ -114,8 +153,6 @@ const page = () => {
     }
   };
 
-
-
   return (
     <PageWrapper>
       <header
@@ -126,7 +163,7 @@ const page = () => {
         }`}
       >
         <h1 className="text-4xl font-extrabold text-center tracking-wide">
-          <span className="text-purple-400">Linear</span>{" "}
+          <span className="text-purple-400">Binary</span>{" "}
           <span className="text-purple-500">Search</span>{" "}
         </h1>
 
@@ -152,7 +189,9 @@ const page = () => {
         <GoBackButton destination="/searching" />
 
         {message && (
-          <div className={`${messageColor}  text-center font-bold text-xl pt-5`}>
+          <div
+            className={`${messageColor}  text-center font-bold text-xl pt-5`}
+          >
             {message}
           </div>
         )}
@@ -162,18 +201,42 @@ const page = () => {
             let color = "bg-blue-500";
 
             if (index === foundIndex) {
-              color = "bg-green-500 scale-120";
-            } else if (index === currentIndex) {
-              color = "bg-yellow-400";
+              color = "bg-green-500 scale-125";
+            } else if (index === mid) {
+              color = "bg-yellow-400 scale-110"; // MID
+            } else if (index >= low && index <= high) {
+              color = "bg-purple-400"; // SEARCH SPACE
             }
 
             return (
               <div
                 key={index}
-                className={`${color} w-12 rounded-t-2xl flex items-end justify-center ${dark ? "text-white" : "text-black"} font-bold transition-all duration-500`}
+                className={`${color} relative w-12 rounded-t-2xl flex items-end justify-center ${
+                  dark ? "text-white" : "text-black"
+                } font-bold transition-all duration-500`}
                 style={{ height: `${value * 3}px` }}
               >
-                {value}
+                {/* VALUE */}
+                <span className="mb-1 z-10">{value}</span>
+
+                {/* POINTER LABELS */}
+                {index === low && (
+                  <span className="absolute -top-6 text-xs font-bold text-blue-400">
+                    L
+                  </span>
+                )}
+
+                {index === mid && (
+                  <span className="absolute -top-10 text-sm font-bold text-yellow-400">
+                    M
+                  </span>
+                )}
+
+                {index === high && (
+                  <span className="absolute -top-6 text-xs font-bold text-red-400">
+                    H
+                  </span>
+                )}
               </div>
             );
           })}
@@ -189,7 +252,7 @@ const page = () => {
             </button>
 
             <button
-              onClick={linearSearch}
+              onClick={binarySearch}
               disabled={searching}
               className={`px-4 py-2 font-bold rounded ${
                 searching ? "bg-gray-500" : "bg-purple-500 hover:bg-purple-600"
@@ -233,7 +296,6 @@ const page = () => {
                 Custom Array
               </button>
 
-            
               {popupOpen && (
                 <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center">
                   <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
@@ -269,9 +331,23 @@ const page = () => {
               )}
             </div>
           </div>
+
+          <div>
+            <div className="flex gap-4 mb-5">
+              <span>Adjust Speed</span>
+              <input
+                type="range"
+                value={speed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+                min="1"
+                max="20"
+                className="bg-gray-500"
+              />
+              <span>{speed}</span>
+            </div>
+          </div>
         </div>
       </main>
-       
     </PageWrapper>
   );
 };
