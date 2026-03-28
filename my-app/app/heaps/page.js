@@ -8,7 +8,7 @@ const searchingPage = () => {
       <div className='bg-gray-200 w-screen h-screen flex gap-10'>
         <Sidebar />
         <div className='py-10 ml-9 flex gap-15 flex-wrap'>
-            <Card name="Linear Search" destination="/searching/linear-search" photo="/Searching-1.jpeg"/>
+            <Card name="Find Kth largest element" destination="/heaps/kth-largest" photo="/Searching-1.jpeg"/>
             
         </div>
       </div>

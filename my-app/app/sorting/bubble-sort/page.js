@@ -5,6 +5,7 @@ import Link from "next/link";
 import { use, useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  const [dark, setDark] = useState(true);
   const [arrayLength, setArrayLength] = useState(10);
   const [array, setArray] = useState(generateArray());
   const [sorting, setSorting] = useState(false);

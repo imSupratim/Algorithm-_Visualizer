@@ -5,7 +5,7 @@ import React from 'react'
 const sortingPage = () => {
   return (
     <div>
-      <div className='bg-gray-400 w-screen h-screen flex gap-10'>
+      <div className='bg-gray-200 w-screen h-screen flex gap-10'>
         <Sidebar />
         <div className='py-10 ml-9 flex gap-15 flex-wrap'>
             <Card name="Selection Sort" destination="/sorting/selection-sort" photo="/Sorting-1.jpg"/>

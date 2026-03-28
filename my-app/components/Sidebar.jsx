@@ -26,6 +26,10 @@ export default function Sidebar() {
           Searching
         </Link>
 
+        <Link href="/heaps" className="block p-2 rounded hover:bg-gray-700 cursor-pointer">
+          Heaps
+        </Link>
+
         
 
       </div>
